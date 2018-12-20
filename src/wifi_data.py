@@ -6,11 +6,12 @@ from wifi_lookup.msg import WifiData, Wifi
 
 class DataNode():
 	def __init__(self):
-		pub = rospy.Publisher('wifi_data', WifiData)
+		pub = rospy.Publisher('wifi_data', WifiData, queue_size=5)
 
-		r = rospy.Rate(rospy.get_param('~rate', 1))
+		#r = rospy.Rate(rospy.get_param('~rate', 1))
+		r = rospy.Rate(10)
 		while not rospy.is_shutdown():
-			os.system("iwlist wlan0 scanning >> datatemp.txt")
+			os.system("iwlist wlan1 scanning >> datatemp.txt")
 
 			wifiraw = open("datatemp.txt").read()
 			os.remove("datatemp.txt")
@@ -22,7 +23,7 @@ class DataNode():
 			msg = WifiData()
 
 			for i in range(len(essids)):
-				if (essids[i] == rospy.get_param('~ssid', 'restricted.utexas.edu')):
+#				if (essids[i] == rospy.get_param('~ssid', 'iitk')):
 					temp = Wifi()			    
 					temp.MAC = addresses[i] 
 					temp.dB = int(signals[i])
